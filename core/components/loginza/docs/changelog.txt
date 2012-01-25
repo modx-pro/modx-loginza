@@ -1,0 +1,12 @@
+Changelog for Loginza
+
+
+1.0.0 (25.01.2012)
+==============
+- Add package _build
+- Source code moved to Github
+
+
+1.0.0 beta1 (30.11.2011)
+==============
+- First public release
