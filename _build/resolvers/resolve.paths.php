@@ -48,10 +48,10 @@ if ($object->xpdo) {
 
             /* setup paths */
             createSetting($modx,'core_path',$modx->getOption('core_path').'components/loginza/');
-            createSetting($modx,'assets_path',$modx->getOption('assets_path').'components/loginza/');
+            //createSetting($modx,'assets_path',$modx->getOption('assets_path').'components/loginza/');
 
             /* setup urls */
-            createSetting($modx,'assets_url',$modx->getOption('assets_url').'components/loginza/');
+            //createSetting($modx,'assets_url',$modx->getOption('assets_url').'components/loginza/');
         break;
     }
 }
