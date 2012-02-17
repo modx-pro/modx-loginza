@@ -34,7 +34,7 @@ set_time_limit(0);
 /* define package */
 define('PKG_NAME','Loginza');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
-define('PKG_VERSION','1.0.0');
+define('PKG_VERSION','1.1.0');
 define('PKG_RELEASE','pl');
 
 /* define sources */
@@ -115,7 +115,7 @@ $attr = array(
                 ),
                 'Chunks' => array(
                     xPDOTransport::PRESERVE_KEYS => false,
-                    xPDOTransport::UPDATE_OBJECT => true,
+                    xPDOTransport::UPDATE_OBJECT => false,
                     xPDOTransport::UNIQUE_KEY => 'name',
                 ),
             ),
@@ -127,7 +127,7 @@ $attr = array(
         ),
         'Chunks' => array (
             xPDOTransport::PRESERVE_KEYS => false,
-            xPDOTransport::UPDATE_OBJECT => true,
+            xPDOTransport::UPDATE_OBJECT => false,
             xPDOTransport::UNIQUE_KEY => 'name',
         ),
     ),

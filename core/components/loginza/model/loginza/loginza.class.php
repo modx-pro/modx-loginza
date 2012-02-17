@@ -12,6 +12,7 @@ class Loginza {
 	var $groups = '';
 	var $loginContext = '';
 	var $addContexts = '';
+	var $updateProfile = 1;
 
     function __construct(modX &$modx) {
         $this->modx =& $modx;
@@ -85,21 +86,24 @@ class Loginza {
 			}
 
 			$user->save();
+			$newuser = 1;
 		}
 
 		// Получаем юзера
 		$user = $this->modx->getObject('modUser', array('username' => $username));
 
-		// Обновляем свойства юзера актуальной информацией при каждом логине.
-		$profile = $user->getOne('Profile');
-		//$profile = $this->modx->getObject('modUserProfile', array('internalKey' => $uid));
-		$profile->set('fullname', $fullname);
-		$profile->set('email', $email);
-		$profile->set('dob', $dob);
-		$profile->set('gender', $gender);
-		$profile->set('website', $provider);
-		$profile->set('comment', $identity);
-		$profile->save();
+		// Обновляем профиль юзера, усли указано его обновлять, или он только что создан.
+		if ($this->updateProfile || $newuser) {
+			$profile = $user->getOne('Profile');
+
+			$profile->set('fullname', $fullname);
+			$profile->set('email', $email);
+			$profile->set('dob', $dob);
+			$profile->set('gender', $gender);
+			$profile->set('website', $provider);
+			$profile->set('comment', $identity);
+			$profile->save();
+		}
 
 		$data = array(
 			'username' => $username,

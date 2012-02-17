@@ -16,6 +16,8 @@ if (!empty($groups)) {$Loginza->groups = $groups;}
 if (!empty($loginContext)) {$Loginza->loginContext = $loginContext;}
 if (!empty($addContexts)) {$Loginza->addContexts = $addContexts;}
 
+if (isset($updateProfile)) {$Loginza->updateProfile = $updateProfile;}
+
 $action = $_REQUEST['action'];
 
 switch ($action) {
