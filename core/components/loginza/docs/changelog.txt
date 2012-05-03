@@ -1,5 +1,10 @@
 Changelog for Loginza
 
+1.1.1 pl (03.05.2012)
+==============
+- Security fixes
+
+
 1.1.0 pl (17.02.2012)
 ==============
 - The chunks are no longer overwritten when you upgrade the package.
