@@ -96,12 +96,12 @@ class Loginza {
 		if ($this->updateProfile || $newuser) {
 			$profile = $user->getOne('Profile');
 
-			$profile->set('fullname', $fullname);
-			$profile->set('email', $email);
-			$profile->set('dob', $dob);
-			$profile->set('gender', $gender);
-			$profile->set('website', $provider);
-			$profile->set('comment', $identity);
+			$profile->set('fullname', strip_tags($fullname));
+			$profile->set('email', strip_tags($email));
+			$profile->set('dob', strip_tags($dob));
+			$profile->set('gender', strip_tags($gender));
+			$profile->set('website', strip_tags($provider));
+			$profile->set('comment', strip_tags($identity));
 			$profile->save();
 		}
 
