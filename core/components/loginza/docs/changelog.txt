@@ -1,5 +1,13 @@
 Changelog for Loginza
 
+1.2.0 (20.08.1012)
+==============
+- Now you can use field username as you want. Authorization now works through remote_key field in modUser.
+- Automatic convertation old usernames (hashes) to normal nicknames and create of remote_key. User now can change his username.
+- Now you can use placeholders of modUser in tplLogout chunk.
+- Snippet now supports non-friendly urls (index.php?id=*).
+
+
 1.1.1 pl (03.05.2012)
 ==============
 - Security fixes
