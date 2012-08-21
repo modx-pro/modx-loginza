@@ -1,20 +1,6 @@
 <?php
 
 class Loginza {
-	var $rememberme = true;
-
-	var $loginTpl = 'tpl.Loginza.login';
-	var $logoutTpl = 'tpl.Loginza.logout';
-	var $profileTpl = 'tpl.Loginza.profile';
-
-	var $saltName = '';
-	var $saltPass = '';
-
-	var $groups = '';
-	var $loginContext = '';
-	var $addContexts = '';
-	var $updateProfile = 1;
-	var $profileFields = 'username,email,fullname,phone,mobilephone,dob,gender,address,country,city,state,zip,fax,photo,comment,website';
 
 	function __construct(modX &$modx,array $config = array()) {
 		$this->modx =& $modx;
@@ -22,11 +8,24 @@ class Loginza {
 		$corePath = $this->modx->getOption('loginza.core_path',$config,$this->modx->getOption('core_path').'components/loginza/');
 		
 		$this->config = array_merge(array(
-			'corePath' => $corePath,
-			'modelPath' => $corePath.'model/',
-			'chunksPath' => $corePath.'elements/chunks/',
-			'snippetsPath' => $corePath.'elements/snippets/',
-			'processorsPath' => $corePath.'processors/',
+			'corePath' => $corePath
+			,'modelPath' => $corePath.'model/'
+			,'chunksPath' => $corePath.'elements/chunks/'
+			,'snippetsPath' => $corePath.'elements/snippets/'
+			,'processorsPath' => $corePath.'processors/'
+			
+			,'rememberme' => true
+			,'loginTpl' => 'tpl.Loginza.login'
+			,'logoutTpl' => 'tpl.Loginza.logout'
+			,'profileTpl' => 'tpl.Loginza.profile'
+			,'saltName' => ''
+			,'saltPass' => ''
+			,'groups' => ''
+			,'loginContext' => ''
+			,'addContexts' => ''
+			,'updateProfile' => true
+			,'profileFields' => 'username,email,fullname,phone,mobilephone,dob,gender,address,country,city,state,zip,fax,photo,comment,website'
+			
 		),$config);
 	}
 
@@ -49,8 +48,8 @@ class Loginza {
 		}
 
 		$identity = $arr['identity'];
-		$userkey = md5($arr['identity'].$this->saltName);
-		$password = md5($arr['identity'].$this->saltPass);;
+		$userkey = md5($arr['identity'].$this->config['saltName']);
+		$password = md5($arr['identity'].$this->config['saltPass']);;
 		$username = $this->modx->sanitizeString($arr['nickname']);
 			if (empty($username)) {
 				$username = $userkey;
@@ -95,8 +94,8 @@ class Loginza {
 			$user->addOne($userProfile);
 
 			// Если указано - заносим в группы
-			if (!empty($this->groups)) {
-				$groups = explode(',', $this->groups);
+			if (!empty($this->config['groups'])) {
+				$groups = explode(',', $this->config['groups']);
 
 				$userGroups = array();
 				foreach ($groups as $group) {
@@ -123,7 +122,7 @@ class Loginza {
 		$username = $user->get('username');
 
 		// Обновляем профиль юзера, усли указано его обновлять, или он только что создан.
-		if ($this->updateProfile || $newuser) {
+		if ($this->config['updateProfile'] || $newuser) {
 			$profile = $user->getOne('Profile');
 
 			$profile->set('fullname', $this->modx->sanitizeString($fullname));
@@ -138,10 +137,10 @@ class Loginza {
 		$data = array(
 			'username' => $username,
 			'password' => $password,
-			'rememberme' => $this->rememberme
+			'rememberme' => $this->config['rememberme']
 		);
-		if (!empty($this->loginContext)) {$data['login_context'] = $this->loginContext;}
-		if (!empty($this->addContexts)) {$data['add_contexts'] = $this->addContexts;}
+		if (!empty($this->config['loginContext'])) {$data['login_context'] = $this->config['loginContext'];}
+		if (!empty($this->config['addContexts'])) {$data['add_contexts'] = $this->config['addContexts'];}
 
 		// Логиним юзера
 		$response = $this->modx->runProcessor('/security/login', $data);
@@ -164,14 +163,21 @@ class Loginza {
 
 	function getProfile($data = array()) {
 		if (!$this->modx->user->isAuthenticated()) {
-			return $this->modx->sendForward($this->modx->getOption('unauthorized_page'));
+			$id = $this->modx->getOption('unauthorized_page');
+			if ($id != $this->modx->resource->id) {
+				return $this->modx->sendForward($id);
+			}
+			else {
+				header('HTTP/1.0 401 Unauthorized');
+				return 'Loginza error: 401 Unauthorized';
+			}
 		}
 
 		$user = $this->modx->user;
 		$profile = $this->modx->user->Profile;
 		$arr = array_merge($user->toArray(), $profile->toArray(), $data);
 
-		return $this->modx->getChunk($this->profileTpl, $arr);
+		return $this->modx->getChunk($this->config['profileTpl'], $arr);
 	}
 
 
@@ -181,7 +187,7 @@ class Loginza {
 		}
 
 		$data = $errors = array();
-		$fields = explode(',', $this->profileFields);
+		$fields = explode(',', $this->config['profileFields']);
 		foreach ($fields as $field) {
 			if (!empty($_POST[$field])) {$data[$field] = $_POST[$field];}
 		}
@@ -213,14 +219,15 @@ class Loginza {
 			$arr = array_merge($user,$profile);
 			$arr['logout_url'] = $url.'logout';
 
-			return $this->modx->getChunk($this->logoutTpl, $arr);
+			return $this->modx->getChunk($this->config['logoutTpl'], $arr);
 		}
 		else {
 			$arr = array('login_url' => urlencode($url.'login'));
 
-			return $this->modx->getChunk($this->loginTpl, $arr);
+			return $this->modx->getChunk($this->config['loginTpl'], $arr);
 		}
 	}
+
 
 	function Refresh() {
 		$this->modx->sendRedirect($this->modx->makeUrl($this->modx->resource->id, '', '', 'full'));

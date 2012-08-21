@@ -6,6 +6,11 @@ Changelog for Loginza
 - Automatic convertation old usernames (hashes) to normal nicknames and create of remote_key. User now can change his username.
 - Now you can use placeholders of modUser in tplLogout chunk.
 - Snippet now supports non-friendly urls (index.php?id=*).
+- Added action getProfile, for displaying users profile.
+- Added action updateProfile for update users profile.
+- Added properties for snippet Loginza
+- Added option &profileFields=`` for specifying user fields that are allowed to update.
+- Added option &profileTpl=`` for specifying chunk of changing user profile.
 
 
 1.1.1 pl (03.05.2012)

@@ -1,25 +1,5 @@
 <?php
 /**
- * Loginza
- *
- * Copyright 2010 by Shaun McCormick <shaun+loginza@modx.com>
- *
- * Loginza is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * Loginza is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * Loginza; if not, write to the Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * @package loginza
- */
-/**
  * Loginza build script
  *
  * @package loginza 
@@ -34,24 +14,24 @@ set_time_limit(0);
 /* define package */
 define('PKG_NAME','Loginza');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
-define('PKG_VERSION','1.1.1');
+define('PKG_VERSION','1.2.0');
 define('PKG_RELEASE','pl');
 
 /* define sources */
 $root = dirname(dirname(__FILE__)).'/';
 $sources = array(
-    'root' => $root,
-    'build' => $root . '_build/',
-    'data' => $root . '_build/data/',
-    'resolvers' => $root . '_build/resolvers/',
-    'chunks' => $root.'core/components/'.PKG_NAME_LOWER.'/elements/chunks/',
-    'snippets' => $root.'core/components/'.PKG_NAME_LOWER.'/elements/snippets/',
-    'plugins' => $root.'core/components/'.PKG_NAME_LOWER.'/elements/plugins/',
-    'lexicon' => $root . 'core/components/'.PKG_NAME_LOWER.'/lexicon/',
-    'docs' => $root.'core/components/'.PKG_NAME_LOWER.'/docs/',
-    'pages' => $root.'core/components/'.PKG_NAME_LOWER.'/elements/pages/',
-    'source_assets' => $root.'assets/components/'.PKG_NAME_LOWER,
-    'source_core' => $root.'core/components/'.PKG_NAME_LOWER,
+	'root' => $root,
+	'build' => $root . '_build/',
+	'data' => $root . '_build/data/',
+	'resolvers' => $root . '_build/resolvers/',
+	'chunks' => $root.'core/components/'.PKG_NAME_LOWER.'/elements/chunks/',
+	'snippets' => $root.'core/components/'.PKG_NAME_LOWER.'/elements/snippets/',
+	'plugins' => $root.'core/components/'.PKG_NAME_LOWER.'/elements/plugins/',
+	'lexicon' => $root . 'core/components/'.PKG_NAME_LOWER.'/lexicon/',
+	'docs' => $root.'core/components/'.PKG_NAME_LOWER.'/docs/',
+	'pages' => $root.'core/components/'.PKG_NAME_LOWER.'/elements/pages/',
+	'source_assets' => $root.'assets/components/'.PKG_NAME_LOWER,
+	'source_core' => $root.'core/components/'.PKG_NAME_LOWER,
 );
 unset($root);
 
