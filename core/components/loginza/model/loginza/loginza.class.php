@@ -172,11 +172,16 @@ class Loginza {
 				return 'Loginza error: 401 Unauthorized';
 			}
 		}
-
-		$user = $this->modx->user;
-		$profile = $this->modx->user->Profile;
-		$arr = array_merge($user->toArray(), $profile->toArray(), $data);
-
+		$user = $profile = array();
+		
+		if ($user = $this->modx->getObject('modUser', $this->modx->user->id)) {
+			$profile = $user->getOne('Profile')->toArray();
+			$user = $user->toArray();
+		}
+		$arr = array_merge($user, $profile, $data);
+		if (empty($data['success']) && !empty($_POST)) {
+			$arr = array_merge($arr, $_POST);
+		}
 		return $this->modx->getChunk($this->config['profileTpl'], $arr);
 	}
 
