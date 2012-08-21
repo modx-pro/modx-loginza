@@ -1,4 +1,4 @@
 Приветствую, <b>[[+username]]</b> ([[+fullname]])!
 <br/>
-<a href='[[~[[*id]]]]?action=logout'>Выйти</a>
+<a href="[[+logout_url]]">Выйти</a>
 
