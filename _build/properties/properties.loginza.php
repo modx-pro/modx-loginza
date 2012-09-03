@@ -87,6 +87,12 @@ $properties[0] = array(
 			array('text' => 'loadTpl','value' => 'loadTpl'),
 		),
 	),
+    array(
+        'name' => 'requiredFields',
+        'value' => 'username,email,fullname',
+        'type' => 'textfield',
+        'desc' => 'Comma separated list of required user fields when update',
+    ),
 );
 
 return $properties;

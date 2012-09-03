@@ -192,10 +192,11 @@ class Loginza {
 		}
 
 		$data = $errors = array();
-		$fields = explode(',', $this->config['profileFields']);
-		foreach ($fields as $field) {
+		$profileFields = explode(',', $this->config['profileFields']);
+		foreach ($profileFields as $field) {
 			if (!empty($_POST[$field])) {$data[$field] = $_POST[$field];}
 		}
+        $data['requiredFields'] = explode(',', $this->config['requiredFields']);
 		
 		$response = $this->modx->runProcessor('web/user/update', $data, array(
 				'processors_path' => $this->config['processorsPath']
