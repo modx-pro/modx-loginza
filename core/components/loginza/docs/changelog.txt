@@ -1,5 +1,11 @@
 Changelog for Loginza
 
+1.2.2 (03.09.2012)
+==============
+- Added parametr &requiredFields
+- Fized sanitization of user profile
+- Added photo to profile
+
 1.2.0 (20.08.1012)
 ==============
 - Now you can use field username as you want. Authorization now works through remote_key field in modUser.

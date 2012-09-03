@@ -2,7 +2,7 @@
 
 class Loginza {
 
-	function __construct(modX &$modx,array $config = array()) {
+    function __construct(modX &$modx,array $config = array()) {
 		$this->modx =& $modx;
 
 		$corePath = $this->modx->getOption('loginza.core_path',$config,$this->modx->getOption('core_path').'components/loginza/');
@@ -25,7 +25,7 @@ class Loginza {
 			,'addContexts' => ''
 			,'updateProfile' => true
 			,'profileFields' => 'username,email,fullname,phone,mobilephone,dob,gender,address,country,city,state,zip,fax,photo,comment,website'
-			
+			,'requiredFields' => 'username,email,fullname'
 		),$config);
 	}
 
@@ -50,7 +50,7 @@ class Loginza {
 		$identity = $arr['identity'];
 		$userkey = md5($arr['identity'].$this->config['saltName']);
 		$password = md5($arr['identity'].$this->config['saltPass']);;
-		$username = $this->modx->sanitizeString($arr['nickname']);
+		$username = $this->Sanitize($arr['nickname']);
 			if (empty($username)) {
 				$username = $userkey;
 			}
@@ -69,6 +69,7 @@ class Loginza {
 			$dob = @mktime(0,0,0, $m,$d,$y);
 		}
 		else {$dob = 0;}
+        $photo = $arr['photo'];
 
 		// Меняем расположение ключа для юзеров версии 1.1.*
 		if ($user = $this->modx->getObject('modUser', array('username' => $userkey, 'remote_key' => null))) {
@@ -125,12 +126,13 @@ class Loginza {
 		if ($this->config['updateProfile'] || $newuser) {
 			$profile = $user->getOne('Profile');
 
-			$profile->set('fullname', $this->modx->sanitizeString($fullname));
+			$profile->set('fullname', $this->Sanitize($fullname));
 			$profile->set('email', strip_tags($email));
-			$profile->set('dob', strip_tags($dob));
-			$profile->set('gender', strip_tags($gender));
+			$profile->set('dob', $dob);
+			$profile->set('gender', $gender);
 			$profile->set('website', strip_tags($provider));
 			$profile->set('comment', strip_tags($identity));
+			$profile->set('photo', $this->Sanitize($photo));
 			$profile->save();
 		}
 
@@ -196,7 +198,7 @@ class Loginza {
 		foreach ($profileFields as $field) {
 			if (!empty($_POST[$field])) {$data[$field] = $_POST[$field];}
 		}
-        $data['requiredFields'] = explode(',', $this->config['requiredFields']);
+		$data['requiredFields'] = explode(',', $this->config['requiredFields']);
 		
 		$response = $this->modx->runProcessor('web/user/update', $data, array(
 				'processors_path' => $this->config['processorsPath']
@@ -234,6 +236,11 @@ class Loginza {
 		}
 	}
 
+	function Sanitize($string = '') {
+		$expr = '/[^-_a-zа-яё0-9@\s\.\,\:\/\\\]+/iu';
+		return preg_replace($expr, '', $string);
+	}
+	
 
 	function Refresh() {
 		$this->modx->sendRedirect($this->modx->makeUrl($this->modx->resource->id, '', '', 'full'));
