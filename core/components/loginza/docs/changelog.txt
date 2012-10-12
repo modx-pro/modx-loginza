@@ -3,7 +3,7 @@ Changelog for Loginza
 1.2.3 (12.10.2012)
 ==============
 - Improved redirect after login\logout
-- Added CURL support.
+- Added CURL support
 
 
 1.2.2 (03.09.2012)
