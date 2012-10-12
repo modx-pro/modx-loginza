@@ -39,9 +39,20 @@ class Loginza {
 			return $this->Refresh();
 		}
 
-		$opt = file_get_contents('http://loginza.ru/api/authinfo?token='.$_POST['token']);
-		$arr = json_decode($opt, true);
+		$url = 'http://loginza.ru/api/authinfo?token='.$_POST['token'];
+		if (function_exists('curl_init')) {
+			$curl = curl_init($url);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_HEADER, false);
+			curl_setopt($curl, CURLOPT_USERAGENT, 'Loginza for MODX Revolution');
+			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+			$opt = curl_exec($curl);
+			curl_close($curl);
+		} else {
+			$opt = file_get_contents($url);
+		}
 
+		$arr = json_decode($opt, true);
 		if (empty($arr['identity'])) {
 			$this->modx->log(modX::LOG_LEVEL_ERROR, 'Loginza: received broken user array');
 			return $this->Refresh();
@@ -69,7 +80,7 @@ class Loginza {
 			$dob = @mktime(0,0,0, $m,$d,$y);
 		}
 		else {$dob = 0;}
-        $photo = $arr['photo'];
+		$photo = $arr['photo'];
 
 		// Меняем расположение ключа для юзеров версии 1.1.*
 		if ($user = $this->modx->getObject('modUser', array('username' => $userkey, 'remote_key' => null))) {
@@ -247,24 +258,24 @@ class Loginza {
 	}
 	
 
-	function Refresh() {		
-        $url = MODX_SITE_URL . substr($_SERVER['REQUEST_URI'],1);
-        
-        if ($pos = strpos($url, '?')) {
-            $arr = explode('&',substr($url, $pos+1));
-            $url = substr($url, 0, $pos);
-            if (count($arr) > 1) {
-                foreach ($arr as $k => $v) {
-                    if (strtolower($v) == 'action=login' || strtolower($v) == 'action=logout') {
-                        unset($arr[$k]);
-                    }
-                }
-                if (!empty($arr)) {
-                    $url = $url . '?' . implode('&', $arr);
-                }
-            }
-        }
-        
+	function Refresh() {
+		$url = MODX_SITE_URL . substr($_SERVER['REQUEST_URI'],1);
+		
+		if ($pos = strpos($url, '?')) {
+			$arr = explode('&',substr($url, $pos+1));
+			$url = substr($url, 0, $pos);
+			if (count($arr) > 1) {
+				foreach ($arr as $k => $v) {
+					if (strtolower($v) == 'action=login' || strtolower($v) == 'action=logout') {
+						unset($arr[$k]);
+					}
+				}
+				if (!empty($arr)) {
+					$url = $url . '?' . implode('&', $arr);
+				}
+			}
+		}
+
 		$this->modx->sendRedirect($url);
 	}
 
