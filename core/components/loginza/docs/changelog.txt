@@ -1,10 +1,16 @@
 Changelog for Loginza
 
+1.2.3 (12.10.2012)
+==============
+- Improved redirect after login\logout
+
+
 1.2.2 (03.09.2012)
 ==============
 - Added parametr &requiredFields
-- Fized sanitization of user profile
+- Fixed sanitization of user profile
 - Added photo to profile
+
 
 1.2.0 (20.08.1012)
 ==============
@@ -28,6 +34,7 @@ Changelog for Loginza
 ==============
 - The chunks are no longer overwritten when you upgrade the package.
 - New parameter &updateProfile. If 1 - user profile will be updated on each login with info from remote service. If 0 - not updated. By default it is set to 1.
+
 
 1.0.0 pl (25.01.2012)
 ==============

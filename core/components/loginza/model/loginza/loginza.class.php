@@ -39,7 +39,7 @@ class Loginza {
 			return $this->Refresh();
 		}
 
-		$opt = file_get_contents('http://loginza.ru/api/authinfo?token='.$_POST['token'], r);
+		$opt = file_get_contents('http://loginza.ru/api/authinfo?token='.$_POST['token']);
 		$arr = json_decode($opt, true);
 
 		if (empty($arr['identity'])) {
@@ -217,9 +217,14 @@ class Loginza {
 
 
 	function loadTpl($arr = array()) {
-		$url = $this->modx->makeUrl($this->modx->resource->id, '', '', 'full');
-		if ($this->modx->getOption('friendly_urls')) {$url .= '?action=';}
-		else {$url .= '&action=';}
+		$url = MODX_SITE_URL . substr($_SERVER['REQUEST_URI'], 1);
+		
+		if ($pos = strpos($url,'?')) {
+			$url .= '&action=';
+		}
+		else {
+			$url .= '?action=';
+		}
 		
 		if ($this->modx->user->isAuthenticated()) {
 			$user = $this->modx->user->toArray();
@@ -242,8 +247,25 @@ class Loginza {
 	}
 	
 
-	function Refresh() {
-		$this->modx->sendRedirect($this->modx->makeUrl($this->modx->resource->id, '', '', 'full'));
+	function Refresh() {		
+        $url = MODX_SITE_URL . substr($_SERVER['REQUEST_URI'],1);
+        
+        if ($pos = strpos($url, '?')) {
+            $arr = explode('&',substr($url, $pos+1));
+            $url = substr($url, 0, $pos);
+            if (count($arr) > 1) {
+                foreach ($arr as $k => $v) {
+                    if (strtolower($v) == 'action=login' || strtolower($v) == 'action=logout') {
+                        unset($arr[$k]);
+                    }
+                }
+                if (!empty($arr)) {
+                    $url = $url . '?' . implode('&', $arr);
+                }
+            }
+        }
+        
+		$this->modx->sendRedirect($url);
 	}
 
 }
