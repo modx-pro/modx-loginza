@@ -4,7 +4,8 @@ Changelog for Loginza
 ==============
 - Added parameter loginResourceId for redirect on successfull login.
 - Added parameter logoutResourceId for redirect on successfull logout.
-- Added placeholder "error" in login and logout chunks, for displaying errors.
+- Added placeholder "error" in login and logout chunks, for displaying errors
+- Added invoke of events: OnBeforeUserFormSave and OnUserFormSave.
 
 
 1.2.3 (12.10.2012)

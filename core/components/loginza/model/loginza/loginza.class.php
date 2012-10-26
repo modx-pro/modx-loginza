@@ -91,6 +91,7 @@ class Loginza {
 			$user->save();
 		}
 		
+		$newuser = 0;
 		// Если юзер заходит первый раз - создаем ему учетную запись
 		if (!$this->modx->getObject('modUser', array('remote_key' => $userkey))) {
 			$user = $this->modx->newObject('modUser', array('remote_key' => $userkey, 'password' => $password));
@@ -127,7 +128,23 @@ class Loginza {
 				$user->addMany($userGroups);
 			}
 
+			if (!$this->config['updateProfile']) {
+				$this->modx->invokeEvent('OnBeforeUserFormSave',array(
+					'mode' => modSystemEvent::MODE_NEW
+					,'id' => 0
+					,'user' => &$user
+					,'profile' => &$userProfile
+				));
+			}
 			$user->save();
+			if (!$this->config['updateProfile']) {
+				$this->modx->invokeEvent('OnUserFormSave',array(
+					'mode' => modSystemEvent::MODE_NEW
+					,'id' => $user->get('id')
+					,'user' => &$user
+					,'profile' => &$userProfile
+				));
+			}
 			$newuser = 1;
 		}
 
@@ -146,7 +163,19 @@ class Loginza {
 			$profile->set('website', strip_tags($provider));
 			$profile->set('comment', strip_tags($identity));
 			$profile->set('photo', $this->Sanitize($photo));
+			$this->modx->invokeEvent('OnBeforeUserFormSave',array(
+				'mode' => $newuser ? modSystemEvent::MODE_NEW : modSystemEvent::MODE_UPD
+				,'id' => $user->get('id')
+				,'user' => &$user
+				,'profile' => &$profile
+			));
 			$profile->save();
+			$this->modx->invokeEvent('OnUserFormSave',array(
+				'mode' => $newuser ? modSystemEvent::MODE_NEW : modSystemEvent::MODE_UPD
+				,'id' => $user->get('id')
+				,'user' => &$user
+				,'profile' => &$profile
+			));
 		}
 
 		$data = array(
@@ -214,10 +243,7 @@ class Loginza {
 		}
 		$data['requiredFields'] = explode(',', $this->config['requiredFields']);
 		
-		$response = $this->modx->runProcessor('web/user/update', $data, array(
-				'processors_path' => $this->config['processorsPath']
-			)
-		);
+		$response = $this->runProcessor('web/user/update', $data);
 		if ($response->isError()) {
 			foreach ($response->errors as $error) {
 				$errors['error.'.$error->field] = $error->message;
@@ -266,6 +292,14 @@ class Loginza {
 	function Sanitize($string = '') {
 		$expr = '/[^-_a-zа-яё0-9@\s\.\,\:\/\\\]+/iu';
 		return preg_replace($expr, '', $string);
+	}
+
+
+	function runProcessor($processor = '', $data = array()) {
+		return $this->modx->runProcessor($processor, $data, array(
+				'processors_path' => $this->config['processorsPath']
+			)
+		);
 	}
 
 
