@@ -11,3 +11,4 @@
 	<img src="http://loginza.ru/img/providers/openid.png" alt="OpenID" title="OpenID">
 	<img src="http://loginza.ru/img/providers/webmoney.png" alt="WebMoney" title="WebMoney">
 </a>
+[[+error:notempty=`<div class="alert alert-block alert-error">[[+error]]</div>`]]

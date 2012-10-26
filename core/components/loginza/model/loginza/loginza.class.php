@@ -2,7 +2,7 @@
 
 class Loginza {
 
-    function __construct(modX &$modx,array $config = array()) {
+	function __construct(modX &$modx,array $config = array()) {
 		$this->modx =& $modx;
 
 		$corePath = $this->modx->getOption('loginza.core_path',$config,$this->modx->getOption('core_path').'components/loginza/');
@@ -26,6 +26,8 @@ class Loginza {
 			,'updateProfile' => true
 			,'profileFields' => 'username,email,fullname,phone,mobilephone,dob,gender,address,country,city,state,zip,fax,photo,comment,website'
 			,'requiredFields' => 'username,email,fullname'
+			,'loginResourceId' => null
+			,'logoutResourceId' => null
 		),$config);
 	}
 
@@ -159,9 +161,9 @@ class Loginza {
 		$response = $this->modx->runProcessor('/security/login', $data);
 		if ($response->isError()) {
 			$this->modx->log(modX::LOG_LEVEL_ERROR, 'Loginza: login error. Username: '.$username.', uid: '.$user->get('id').'. Message: '.$response->getMessage());
+			$_SESSION['loginza.error'] = $response->getMessage();
 		}
-
-		return $this->Refresh();
+		return $this->Refresh('login');
 	}
 
 
@@ -169,8 +171,9 @@ class Loginza {
 		$response = $this->modx->runProcessor('/security/logout');
 		if ($response->isError()) {
 			$this->modx->log(modX::LOG_LEVEL_ERROR, 'Loginza: logout error. Username: '.$this->modx->user->get('username').', uid: '.$this->modx->user->get('id').'. Message: '.$response->getMessage());
+			$_SESSION['loginza.error'] = $response->getMessage();
 		}
-		return $this->Refresh();
+		return $this->Refresh('logout');
 	}
 
 
@@ -236,49 +239,64 @@ class Loginza {
 		else {
 			$url .= '?action=';
 		}
+		$error = '';
+		if (!empty($_SESSION['loginza.error'])) {
+			$error = $_SESSION['loginza.error'];
+			unset($_SESSION['loginza.error']);
+		}
 		
 		if ($this->modx->user->isAuthenticated()) {
 			$user = $this->modx->user->toArray();
 			$profile = $this->modx->user->getOne('Profile')->toArray();
 			$arr = array_merge($user,$profile);
 			$arr['logout_url'] = $url.'logout';
-
+			$arr['error'] = $error;
+			
 			return $this->modx->getChunk($this->config['logoutTpl'], $arr);
 		}
 		else {
 			$arr = array('login_url' => urlencode($url.'login'));
-
+			$arr['error'] = $error;
+			
 			return $this->modx->getChunk($this->config['loginTpl'], $arr);
 		}
 	}
+
 
 	function Sanitize($string = '') {
 		$expr = '/[^-_a-zа-яё0-9@\s\.\,\:\/\\\]+/iu';
 		return preg_replace($expr, '', $string);
 	}
-	
 
-	function Refresh() {
-		$url = MODX_SITE_URL . substr($_SERVER['REQUEST_URI'],1);
-		
-		if ($pos = strpos($url, '?')) {
-			$arr = explode('&',substr($url, $pos+1));
-			$url = substr($url, 0, $pos);
-			if (count($arr) > 1) {
-				foreach ($arr as $k => $v) {
-					if (strtolower($v) == 'action=login' || strtolower($v) == 'action=logout') {
-						unset($arr[$k]);
+
+	function Refresh($action = null) {
+		if ($action == 'login' && $this->config['loginResourceId']) {
+			$url = $this->modx->makeUrl($this->config['loginResourceId'],'','','full');
+		}
+		else if ($action == 'logout' && $this->config['logoutResourceId']) {
+			$url = $this->modx->makeUrl($this->config['logoutResourceId'],'','','full');
+		}
+		else {
+			$url = MODX_SITE_URL . substr($_SERVER['REQUEST_URI'],1);
+			
+			if ($pos = strpos($url, '?')) {
+				$arr = explode('&',substr($url, $pos+1));
+				$url = substr($url, 0, $pos);
+				if (count($arr) > 1) {
+					foreach ($arr as $k => $v) {
+						if (strtolower($v) == 'action=login' || strtolower($v) == 'action=logout') {
+							unset($arr[$k]);
+						}
 					}
-				}
-				if (!empty($arr)) {
-					$url = $url . '?' . implode('&', $arr);
+					if (!empty($arr)) {
+						$url = $url . '?' . implode('&', $arr);
+					}
 				}
 			}
 		}
-
+		
 		$this->modx->sendRedirect($url);
 	}
-
 }
 
 ?>

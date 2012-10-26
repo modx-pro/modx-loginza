@@ -1,4 +1,4 @@
-<form action="[[~[[*id]]]]" method="post" class=" form-horizontal">
+<form action="[[~[[*id]]]]" method="post" class="form-horizontal">
 	<div class="control-group[[+error.username:notempty=` error`]]">
 		<label class="control-label">Имя</label>
 		<div class="controls">
@@ -29,8 +29,3 @@
 </form>
 [[+success:is=`1`:then=`<div class="alert alert-block">Профиль успешно обновлен</div>`]]
 [[+success:is=`0`:then=`<div class="alert alert-block alert-error">Ошибка при обновлении профиля</div>`]]
-<script type="text/javascript">
-	if ($(".alert").length > 0) {
-		$(".alert").alert();
-	}
-</script>

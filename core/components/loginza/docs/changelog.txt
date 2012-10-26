@@ -1,5 +1,12 @@
 Changelog for Loginza
 
+1.3.0 (26.10.2012)
+==============
+- Added parameter loginResourceId for redirect on successfull login.
+- Added parameter logoutResourceId for redirect on successfull logout.
+- Added placeholder "error" in login and logout chunks, for displaying errors.
+
+
 1.2.3 (12.10.2012)
 ==============
 - Improved redirect after login\logout

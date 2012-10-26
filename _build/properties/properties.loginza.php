@@ -87,12 +87,24 @@ $properties[0] = array(
 			array('text' => 'loadTpl','value' => 'loadTpl'),
 		),
 	),
-    array(
-        'name' => 'requiredFields',
-        'value' => 'username,email,fullname',
-        'type' => 'textfield',
-        'desc' => 'Comma separated list of required user fields when update',
-    ),
+	array(
+		'name' => 'requiredFields',
+		'value' => 'username,email,fullname',
+		'type' => 'textfield',
+		'desc' => 'Comma separated list of required user fields when update',
+	),
+	array(
+		'name' => 'loginResourceId',
+		'value' => 0,
+		'type' => 'numberfield',
+		'desc' => 'Resource id to redirect to on successful login. 0 will redirect to self.',
+	),
+	array(
+		'name' => 'logoutResourceId',
+		'value' => 0,
+		'type' => 'numberfield',
+		'desc' => 'Resource id to redirect to on successful logout. 0 will redirect to self.',
+	),
 );
 
 return $properties;
