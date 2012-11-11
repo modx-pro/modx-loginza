@@ -225,7 +225,11 @@ class Loginza {
 		}
 		$arr = array_merge($user, $profile, $data);
 		if (empty($data['success']) && !empty($_POST)) {
-			$arr = array_merge($arr, $_POST);
+			$tmp = array();
+			foreach ($_POST as $k => $v) {
+				$tmp[$k] = $this->Sanitize($v);
+			}
+			$arr = array_merge($arr, $tmp);
 		}
 		return $this->modx->getChunk($this->config['profileTpl'], $arr);
 	}
@@ -239,7 +243,7 @@ class Loginza {
 		$data = $errors = array();
 		$profileFields = explode(',', $this->config['profileFields']);
 		foreach ($profileFields as $field) {
-			if (!empty($_POST[$field])) {$data[$field] = $_POST[$field];}
+			if (!empty($_POST[$field])) {$data[$field] = $this->Sanitize($_POST[$field]);}
 		}
 		$data['requiredFields'] = explode(',', $this->config['requiredFields']);
 		
