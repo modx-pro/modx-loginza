@@ -1,12 +1,16 @@
 <?php
-//ini_set('display_errors', 1);
-//ini_set('error_reporting', -1);
-
 $Loginza = $modx->getService('loginza','Loginza', $modx->getOption('core_path').'components/loginza/model/loginza/',$scriptProperties);
 if (!($Loginza instanceof Loginza)) return;
 
-if (empty($_REQUEST['action'])) {$action = $modx->getOption('action', $scriptProperties, 'loadTpl');}
-else {$action = $_REQUEST['action'];}
+// If user sends action
+if (!empty($_REQUEST['action'])) {
+	// And it is login or logout - it will override any action
+	if (in_array($_REQUEST['action'], array('login','logout'))) {$action = $_REQUEST['action'];}
+	// And he wants to update his profile - it will be handled only by snippet that called with action getProfile
+	else if ($_REQUEST['action'] == 'updateProfile' && $modx->getOption('action', $scriptProperties) == 'getProfile') {$action = 'updateProfile';}
+}
+
+if (empty($action)) {$action = $modx->getOption('action', $scriptProperties, 'loadTpl');}
 
 switch ($action) {
 	case 'login': $Loginza->Login(); break;

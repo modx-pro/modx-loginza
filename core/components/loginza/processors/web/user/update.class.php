@@ -2,6 +2,7 @@
 require MODX_CORE_PATH.'model/modx/processors/security/user/update.class.php';
 
 class LoginzaUpdateProcessor extends modUserUpdateProcessor {
+	public $languageTopics = array('default','user');
 	public $permission = '';
 
 	public function initialize() {
